@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IPL Chase Predictor</title>
+<style>
+  body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #f1f5f9; display: flex; justify-content: center; padding: 30px 16px; }
+  .card { background: #1e293b; padding: 28px; border-radius: 14px; width: 100%; max-width: 420px; box-shadow: 0 8px 24px rgba(0,0,0,.4); }
+  h1 { font-size: 1.3rem; margin-bottom: 18px; color: #f97316; text-align: center; }
+  label { display: block; margin-top: 12px; font-size: .85rem; color: #94a3b8; }
+  select, input { width: 100%; padding: 9px; margin-top: 4px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #f1f5f9; }
+  button { width: 100%; margin-top: 20px; padding: 11px; border: none; border-radius: 8px; background: #f97316; color: #0f172a; font-weight: 700; font-size: 1rem; cursor: pointer; }
+  button:hover { background: #ea580c; }
+  #result { margin-top: 20px; text-align: center; }
+  .bar { height: 26px; border-radius: 6px; overflow: hidden; display: flex; margin-top: 8px; }
+  .bar div { display: flex; align-items: center; justify-content: center; font-size: .75rem; font-weight: 700; }
+  .bat { background: #f97316; color: #0f172a; }
+  .bowl { background: #334155; color: #f1f5f9; }
+  .error { color: #f87171; margin-top: 12px; text-align: center; font-size: .85rem; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>🏏 IPL Chase Predictor</h1>
+  <form id="form">
+    <label>Batting Team</label>
+    <select name="team_batting" required>
+      {% for t in teams %}<option value="{{ t }}">{{ t }}</option>{% endfor %}
+    </select>
+
+    <label>Bowling Team</label>
+    <select name="team_bowling" required>
+      {% for t in teams %}<option value="{{ t }}">{{ t }}</option>{% endfor %}
+    </select>
+
+    <label>Target</label>
+    <input type="number" name="target" required min="1">
+
+    <label>Current Score</label>
+    <input type="number" name="curr_run" required min="0">
+
+    <label>Balls Bowled (this innings)</label>
+    <input type="number" name="curr_ball" required min="0" max="119">
+
+    <label>Wickets Fallen</label>
+    <input type="number" name="curr_wick" required min="0" max="9">
+
+    <button type="submit">Predict Win %</button>
+  </form>
+
+  <div id="result"></div>
+</div>
+
+<script>
+document.getElementById('form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const payload = Object.fromEntries(fd.entries());
+  const resultDiv = document.getElementById('result');
+  resultDiv.innerHTML = 'Predicting…';
+
+  try {
+    const res = await fetch('/predict', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (data.error) {
+      resultDiv.innerHTML = `<div class="error">${data.error}</div>`;
+      return;
+    }
+    resultDiv.innerHTML = `
+      <div><strong>${payload.team_batting}</strong>: ${data.batting_team_win_probability}%
+      &nbsp;|&nbsp; <strong>${payload.team_bowling}</strong>: ${data.bowling_team_win_probability}%</div>
+      <div class="bar">
+        <div class="bat" style="width:${data.batting_team_win_probability}%">${data.batting_team_win_probability}%</div>
+        <div class="bowl" style="width:${data.bowling_team_win_probability}%">${data.bowling_team_win_probability}%</div>
+      </div>`;
+  } catch (err) {
+    resultDiv.innerHTML = `<div class="error">Something went wrong. Try again.</div>`;
+  }
+});
+</script>
+</body>
+</html>
