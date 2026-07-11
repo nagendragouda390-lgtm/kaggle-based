@@ -197,6 +197,53 @@ body {
   text-orientation: mixed;
 }
 
+/* ---- trend chart ---- */
+.chart-panel {
+  background: var(--night-2);
+  border: 1px solid var(--steel-line);
+  border-radius: 14px;
+  padding: 18px 18px 12px;
+  margin-bottom: 20px;
+  position: relative;
+}
+.chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.chart-legend {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--steel);
+  display: flex;
+  gap: 14px;
+}
+.chart-legend .dot {
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+.chart-legend .dot.amber { background: var(--amber); box-shadow: 0 0 6px var(--amber); }
+#trendChart { width: 100%; display: block; }
+.chart-empty {
+  position: absolute;
+  inset: 44px 18px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  color: var(--steel);
+  pointer-events: none;
+}
+.chart-empty.hidden { display: none; }
+
 /* ---- input console ---- */
 .console {
   background: var(--night-2);
