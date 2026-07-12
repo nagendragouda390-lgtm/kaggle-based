@@ -19,7 +19,7 @@ FEATURE_ORDER = [
 
 # Team name -> encoded id, taken from the training notebook
 TEAM_CODES = {
-    "RR": 3, "RCB": 252, "GT": 615, "PBKS": 134, "SRH": 494,
+    "Rajasthan Royals": 3, "Royal Challengers Bengaluru": 252, "GT": 615, "PBKS": 134, "SRH": 494,
     "DC": 129, "KKR": 6, "CSK": 1, "LSG": 614, "MI": 2,
 }
 
